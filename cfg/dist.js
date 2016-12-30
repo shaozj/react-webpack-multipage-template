@@ -40,7 +40,7 @@ let config = Object.assign({}, baseConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.js',
-      minChunks: Infinity // 提取使用3次以上的模块，打包到vendor里
+      minChunks: Infinity
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
@@ -49,11 +49,11 @@ let config = Object.assign({}, baseConfig, {
     new BowerWebpackPlugin({
       searchResolveModulesDirectories: false
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin(),

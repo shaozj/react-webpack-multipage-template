@@ -24,20 +24,12 @@ function getDefaultModules() {
     ],
     loaders: [
       {
-        test: /\.css$/,
-        loader: 'style!css'
-      },
-      {
         test: /\.sass/,
         loader: ExtractTextPlugin.extract('style', 'css!sass?outputStyle=expanded&indentedSyntax')
       },
       {
         test: /\.scss/,
         loader: ExtractTextPlugin.extract('style', 'css!sass?outputStyle=expanded')
-      },
-      {
-        test: /\.less/,
-        loader: 'style!css!less'
       },
       {
         test: /\.styl/,
@@ -58,6 +50,6 @@ function getDefaultModules() {
 module.exports = {
   srcPath: srcPath,
   publicPath: '/build/',
-  port: 8001,
+  port: 8002,
   getDefaultModules: getDefaultModules
 };

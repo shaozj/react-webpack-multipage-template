@@ -2,6 +2,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const HappyPack = require('happypack');
+
 
 const baseConfig = require('./base');
 const defaultSettings = require('./defaults');
@@ -20,6 +22,14 @@ let config = Object.assign({}, baseConfig, {
   cache: false,
   devtool: 'sourcemap',
   plugins: [
+    new HappyPack({
+      id: 'jsx',
+      threads: 4,
+      loaders: ['react-hot', 'babel?' + JSON.stringify({
+        presets: ['es2015', 'stage-0', 'react'],
+        plugins: [["import", { "libraryName": "antd", "style": "css" }]]
+      })]
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery', // 使jquery变成全局变量,不用在自己文件require('jquery')了
       jQuery: 'jquery',
@@ -30,7 +40,7 @@ let config = Object.assign({}, baseConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.js',
-      minChunks: 3 // 提取使用3次以上的模块，打包到vendor里
+      minChunks: Infinity // 提取使用3次以上的模块，打包到vendor里
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
@@ -39,7 +49,11 @@ let config = Object.assign({}, baseConfig, {
     new BowerWebpackPlugin({
       searchResolveModulesDirectories: false
     }),
-    new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin(),
@@ -49,14 +63,22 @@ let config = Object.assign({}, baseConfig, {
 });
 
 // Add needed loaders to the defaults here
-config.module.loaders.push({
-  test: /\.(js|jsx)$/,
-  loader: 'babel',
-  include: [].concat(
-    config.additionalPaths,
-    [ path.join(__dirname, '/../src') ]
-  )
-});
+config.module.loaders.push(
+  {
+    test: /\.(js|jsx)$/,
+    loaders: ['happypack/loader?id=jsx'],
+    include: [].concat(
+      config.additionalPaths,
+      [ path.join(__dirname, '/../src') ]
+    )
+  },{
+    test: /\.css$/,
+    loader: ExtractTextPlugin.extract('style', 'css')
+  },{
+    test: /\.less/,
+    loader: ExtractTextPlugin.extract('style', 'css!less')
+  }
+);
 
 // 生成html
 config = generateHtmls(config);

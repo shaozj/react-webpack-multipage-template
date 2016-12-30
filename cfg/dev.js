@@ -2,6 +2,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const HappyPack = require('happypack');
 const baseConfig = require('./base');
 const defaultSettings = require('./defaults');
 const getEntry = require('./entry');
@@ -16,8 +17,22 @@ let entries = getEntry('./src/pages/*/index.js');
 let config = Object.assign({}, baseConfig, {
   entry: entries,
   cache: true,
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   plugins: [
+    new HappyPack({
+      id: 'jsx',
+      threads: 4,
+      loaders: ['react-hot', 'babel?' + JSON.stringify({
+        presets: ['es2015', 'stage-0', 'react']
+      })]
+    }),
+    new webpack.DllReferencePlugin({
+      context: path.join(__dirname, '../'),
+      /**
+       * 在这里引入 manifest 文件
+       */
+      manifest: require('../build/vendor-manifest.json')
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.ProvidePlugin({
       $: 'jquery', // 使jquery变成全局变量,不用在自己文件require('jquery')了
@@ -40,14 +55,23 @@ let config = Object.assign({}, baseConfig, {
 });
 
 // Add needed loaders to the defaults here
-config.module.loaders.push({
-  test: /\.(js|jsx)$/,
-  loader: 'react-hot!babel-loader',
-  include: [].concat(
-    config.additionalPaths,
-    [ path.join(__dirname, '/../src') ]
-  )
-});
+config.module.loaders.push(
+  {
+    test: /\.(js|jsx)$/,
+    //loader: 'react-hot!babel-loader',
+    loaders: ['happypack/loader?id=jsx'],
+    include: [].concat(
+      config.additionalPaths,
+      [ path.join(__dirname, '/../src') ]
+    )
+  },{
+    test: /\.css$/,
+    loader: 'style!css'
+  },{
+    test: /\.less/,
+    loader: 'style!css!less'
+  }
+);
 
 // 生成html
 config = generateHtmls(config);

@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 function generateHtmls(config) {
   let entry = config.entry;
   let chunks = Object.keys(entry);
+  let template = process.env.REACT_WEBPACK_ENV === 'dist' ? './src/template-dist.html' : './src/template-dev.html';
   // 生成HTML文件
   chunks.forEach(pathname => {
     if (pathname == 'vendor') {
@@ -13,7 +14,7 @@ function generateHtmls(config) {
     let conf = {
       title: name,
       filename: name + '.html',
-      template: './src/template.html',
+      template: template,
       inject: 'body',
       minify: {
         removeComments: true,

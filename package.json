@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.1",
-  "description": "数娱大后台，运营主题库管理",
+  "description": "react webpack multipage template",
   "main": "",
   "scripts": {
     "init": "webpack --config webpack.dll.config.js",
@@ -24,9 +24,7 @@
     "fastpush": "npm run dist && git add . && git commit -m 'build' && git push origin daily/1.0.0"
   },
   "repository": "http://gitlab.alibaba-inc.com/de/theme-library-manager",
-  "keywords": [
-    "theme-library"
-  ],
+  "keywords": [ "react", "webpack", "multipage", "template" ],
   "author": "澜嵚<zhenjiang.szj@alibaba-inc.com>, 冰浠<bingxi@alibaba-inc.com>",
   "devDependencies": {
     "babel-core": "^6.0.0",

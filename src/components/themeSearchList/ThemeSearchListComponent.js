@@ -109,11 +109,12 @@ export default class ThemeSearchListComponent extends React.Component {
         rule: '与',
         contains:'1223',
         author:'aa',
-        status:'发布'
+        status:'发布',
+        key: i
       }
       data.push(item);
     }
-    this.setState({'data':data});
+    this.setState({data: data});
   }
   render() {
     let columns = [{
